@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+  <table>
+    <tr>
+      <th>Номер</th>
+      <th>Дата добавления</th>
+      <th>Вид оргтехники</th>
+      <th>Модель</th>
+      <th>Описание проблемы</th>
+      <th>ФИО клиента</th>
+      <th>Номер телефона</th>
+      <th>Статус</th>
+    </tr>
+  </table>
+  <script>
+  const table = document.querySelector("table");
+
+  async function getorder() {
+  const response = await fetch('http://localhost:3000/orders', {method: 'GET'});
+  const orders = await response.json();
+
+    orders.forEach(o => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${o.id}</td>
+      <td>${o.adddate}</td>
+      <td>${o.view}</td>
+      <td>${o.model}</td>
+      <td>${o.problem}</td>
+      <td>${o.fio}</td>
+      <td>${o.numberphone}</td>
+      <td>${o.status}</td>`; 
+    table.append(tr);
+    });
+  }
+getorder();
+  </script>
+    <h1>Создание заявки</h1>
+  <script>
+  <table>
+    <tr>
+      <th>Номер</th>
+      <th>Дата добавления</th>
+      <th>Вид оргтехники</th>
+      <th>Модель</th>
+      <th>Описание проблемы</th>
+      <th>ФИО клиента</th>
+      <th>Номер телефона</th>
+      <th>Статус</th>
+    </tr>
+    <tr>
+      <td><input id ="id" placeholder="Номер"/></td>
+      <td><input id ="adddate" type="date"/></td>
+      <td><input id ="view" placeholder="Вид оргтехники"/></td>
+      <td><input id ="model" placeholder="Модель"/></td>
+      <td><input id ="problem" placeholder="Описание проблемы"/></td>
+      <td><input id ="fio" placeholder="ФИО клиента"/></td>
+      <td><input id ="numberphone" placeholder="Номер телефона"/></td>
+      <td><input id ="status" placeholder="Статус"/></td>
+      <td><input id ="save" value="Отправить" type="button"/></td>
+    </tr>
+  </table>
+  </script>
+  <script>
+    document.getElementById('save').onclick = async =>{
+      const order = {
+        id: document.getElementById('id').value,
+        adddate: document.getElementById('adddate').value,
+        view: document.getElementById('view').value,
+        model: document.getElementById('model').value,
+        problem: document.getElementById('problem').value,
+        fio: document.getElementById('fio').value,
+        numberphone: document.getElementById('numberphone').value,
+        status: document.getElementById('status').value
+      };
+      fetch('http://localhost:3000/orders', {
+        method: 'POST',
+        body: JSON.stringify(order)
+      });
+    }
+  </script>
+  <h1>Статистика</h1>
+  <div id="statistics"></div>
+  <script>
+    async function getStatistic() {
+      const response = await fetch('http://localhost:3000/statistics')
+      const statistics = await response.json
+      document.getElementById('statistics').innerText = `
+        <p>Выполнено: ${statistics.complitedOrders}</p>
+        <p>Среднее время: ${statistics.averageStayTime}</p>`
+      }
+      getStatistics();
+  </script>
+  <h1>Поиск заявки по номеру</h1>
+  <button onclick="findOrder()">Найти</button>
+  <div id="order"></div>
+  <script>
+    async function findOrder(){
+      const id = document.getElementById('orderNumber').value;
+      const response = await fetch(`http://localhost:3000/orders/${orderid}`,{method: 'GET'});
+      if(response.ok){
+      const order = await response.json();
+      document.getElementById('order').innerText = `
+        <p>Номер: ${order.id}</p>
+        <p>Дата добавления: ${order.adddate}</p>
+        <p>Вид оргтехники: ${order.view}</p>
+        <p>Модель: ${order.model}</p>
+        <p>Описание проблемы: ${order.problem}</p>
+        <p>ФИО клиента: ${order.fio}</p>
+        <p>Номер телефона: ${order.numberphone}</p>
+        <p>Статус: ${order.status}</p>`
+      }
+      else {
+        document.getElementById('order').innerText = 'Заявка не найдена';
+      }
+    }
+  </script>
+</body>
+</html>
